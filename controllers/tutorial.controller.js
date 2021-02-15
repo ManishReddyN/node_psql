@@ -32,3 +32,17 @@ exports.create = (req, res) => {
       });
     });
 };
+
+exports.findTutorialById = (req, res) => {
+  const id = req.params.id;
+
+  Tutorial.findByPk(id, { include: ["publisher"] })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error retrieving Tutorial with id=" + id,
+      });
+    });
+};
