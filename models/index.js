@@ -27,8 +27,6 @@ db.tutorials.belongsTo(db.publishers, {
   foreignKey: {
     name: "publisherID",
     allowNull: false,
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
   },
   as: "publisher",
 });
