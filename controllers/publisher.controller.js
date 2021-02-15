@@ -2,9 +2,7 @@ const db = require("../models");
 const Publisher = db.publishers;
 const Op = db.Sequelize.Op;
 const shortid = require("shortid");
-// Create and Save a new Tutorial
 exports.create = (req, res) => {
-  // Validate request
   if (!req.body.name || !req.body.bio) {
     res.status(400).send({
       message: "Content can not be empty!",
@@ -12,7 +10,6 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
   const publisher = {
     name: req.body.name,
     bio: req.body.bio,
@@ -21,7 +18,6 @@ exports.create = (req, res) => {
       : shortid.generate(),
   };
 
-  // Save Tutorial in the database
   Publisher.create(publisher)
     .then((data) => {
       res.send(data);
@@ -33,7 +29,7 @@ exports.create = (req, res) => {
       });
     });
 };
-exports.findOne = (req, res) => {
+exports.findPublisherByID = (req, res) => {
   const id = req.params.id;
 
   Publisher.findByPk(id, { include: ["tutorials"] })
@@ -43,6 +39,26 @@ exports.findOne = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: "Error retrieving Tutorial with id=" + id,
+      });
+    });
+};
+exports.deletePublisher = (req, res) => {
+  const id = req.params.id;
+  Publisher.destroy({ where: { publisherID: id } })
+    .then((num) => {
+      if (num == 1) {
+        res.status(200).send({
+          message: "Publisher was deleted successfully",
+        });
+      } else {
+        res.status(404).send({
+          message: `Cannot delete publisher with ${id}. Publisher was not found`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error deleting the publisher",
       });
     });
 };
